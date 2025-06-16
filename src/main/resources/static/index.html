@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Split App – Add Expense</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #f0f2f5;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    form label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    form input,
+    form select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .person-entry {
+      background-color: #f9f9f9;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .person-entry label {
+      flex: 1;
+      margin: 0;
+    }
+
+    .person-entry input {
+      width: 100%;
+    }
+
+    .person-entry button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #addPersonBtn {
+      margin-top: 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #recurringFields {
+      display: none;
+    }
+
+    #submitBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #responseBox {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .nav-buttons {
+      margin-bottom: 20px;
+    }
+
+    .nav-buttons a {
+      margin-right: 10px;
+      padding: 10px 15px;
+      background-color: #6c757d;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+
+    .nav-buttons a:hover {
+      background-color: #5a6268;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="nav-buttons">
+    <a href="view-expenses.html">View Expenses</a>
+  </div>
+
+  <h1>Add New Expense</h1>
+
+  <form id="expenseForm">
+    <label for="description">Description:</label>
+    <input type="text" name="description" required />
+
+    <label for="amount">Amount:</label>
+    <input type="number" name="amount" step="0.01" required />
+
+    <label for="paidBy">Paid By:</label>
+    <input type="text" name="paidBy" required />
+
+    <label for="splitType">Split Type:</label>
+    <select name="splitType" id="splitType" required>
+      <option value="EQUAL">EQUAL</option>
+      <option value="EXACT">EXACT</option>
+      <option value="PERCENTAGE">PERCENTAGE</option>
+    </select>
+
+    <label>Split Details:</label>
+    <div id="splitDetailsContainer"></div>
+    <button type="button" id="addPersonBtn">+ Add Person</button>
+
+    <label for="category">Category:</label>
+    <select name="category" required>
+      <option value="FOOD">FOOD</option>
+      <option value="TRAVEL">TRAVEL</option>
+      <option value="RENT">RENT</option>
+      <option value="UTILITIES">UTILITIES</option>
+      <option value="OTHER">OTHER</option>
+    </select>
+
+    <label for="date">Date:</label>
+    <input type="date" name="date" required />
+
+    <label>
+      <input type="checkbox" id="recurring" name="recurring" />
+      Is Recurring?
+    </label>
+
+    <div id="recurringFields">
+      <label for="recurrenceType">Recurrence Type:</label>
+      <select name="recurrenceType">
+        <option value="">-- Select --</option>
+        <option value="DAILY">DAILY</option>
+        <option value="WEEKLY">WEEKLY</option>
+        <option value="MONTHLY">MONTHLY</option>
+      </select>
+
+      <label for="recurrenceEndDate">Recurrence End Date:</label>
+      <input type="date" name="recurrenceEndDate" />
+    </div>
+
+    <button type="submit" id="submitBtn">Submit Expense</button>
+    <div id="responseBox"></div>
+  </form>
+
+  <script src="app.js"></script>
+</body>
+</html>

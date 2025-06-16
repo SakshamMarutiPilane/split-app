@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>View Expenses</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      padding: 30px;
+    }
+
+    .back-button {
+      display: inline-block;
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    select, input[type="month"], button {
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .expense-group {
+      margin-bottom: 30px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #ccc;
+    }
+
+    .expense-group h3 {
+      margin-bottom: 10px;
+      font-size: 20px;
+      color: #444;
+    }
+
+    .expense-card {
+      background-color: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .expense-card h4 {
+      margin: 0 0 5px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .expense-card p {
+      margin: 3px 0;
+    }
+
+    .expense-card ul {
+      margin: 5px 0 0 20px;
+      padding-left: 0;
+    }
+
+    .expense-card ul li {
+      list-style: disc;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="back-button">← Back to Home</a>
+
+  <div class="filters">
+    <select id="groupBy">
+      <option value="person">Group by Person</option>
+      <option value="date">Group by Date</option>
+    </select>
+
+    <select id="categoryFilter">
+      <option value="">All Categories</option>
+      <option value="FOOD">FOOD</option>
+      <option value="TRAVEL">TRAVEL</option>
+      <option value="RENT">RENT</option>
+      <option value="UTILITIES">UTILITIES</option>
+      <option value="OTHER">OTHER</option>
+    </select>
+
+    <input type="month" id="monthFilter" />
+    <button onclick="fetchExpenses()">Apply Filters</button>
+  </div>
+
+  <div id="expenseList"></div>
+
+  <script>
+    async function fetchExpenses() {
+      const res = await fetch("/expenses");
+      const expenses = await res.json();
+      const container = document.getElementById("expenseList");
+      container.innerHTML = "";
+
+      if (!expenses.length) {
+        container.innerHTML = "<p>No expenses recorded yet.</p>";
+        return;
+      }
+
+      const category = document.getElementById("categoryFilter").value;
+      const month = document.getElementById("monthFilter").value;
+      const groupBy = document.getElementById("groupBy").value;
+
+      let filtered = expenses;
+
+      if (category) {
+        filtered = filtered.filter(e => e.category === category);
+      }
+
+      if (month) {
+        filtered = filtered.filter(e => e.date.startsWith(month));
+      }
+
+      const grouped = {};
+
+      filtered.forEach(exp => {
+        const key = groupBy === "person" ? exp.paidBy : exp.date;
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(exp);
+      });
+
+      for (const group in grouped) {
+        const groupDiv = document.createElement("div");
+        groupDiv.className = "expense-group";
+        groupDiv.innerHTML = `<h3>${groupBy === "person" ? "Paid by" : "Date"}: ${group}</h3>`;
+
+        grouped[group].forEach(exp => {
+          const card = document.createElement("div");
+          card.className = "expense-card";
+          card.innerHTML = `
+            <h4>${exp.description}</h4>
+            <p><strong>Amount:</strong> ₹${exp.amount}</p>
+            <p><strong>Paid by:</strong> ${exp.paidBy}</p>
+            <p><strong>Split Type:</strong> ${exp.splitType}</p>
+            <p><strong>Date:</strong> ${exp.date}</p>
+            <p><strong>Recurring:</strong> ${exp.recurring ? "Yes" : "No"}</p>
+            <p><strong>Recurrence:</strong> ${exp.recurrenceType || "N/A"} → ${exp.recurrenceEndDate || "N/A"}</p>
+            <p><strong>Category:</strong> ${exp.category}</p>
+            <p><strong>Split Details:</strong></p>
+            <ul>
+              ${exp.splitDetails.map(sd => `<li>${sd.person}: ${sd.value}</li>`).join("")}
+            </ul>
+            <button onclick="deleteExpense('${exp.id}')">🗑️ Delete</button>
+          `;
+          groupDiv.appendChild(card);
+        });
+
+        container.appendChild(groupDiv);
+      }
+    }
+
+    async function deleteExpense(id) {
+      if (!confirm("Are you sure you want to delete this expense?")) return;
+
+      const res = await fetch(`/expenses/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        alert("Expense deleted.");
+        fetchExpenses();
+      } else {
+        alert("Failed to delete expense.");
+      }
+    }
+
+    // Initial load
+    fetchExpenses();
+  </script>
+</body>
+</html>
