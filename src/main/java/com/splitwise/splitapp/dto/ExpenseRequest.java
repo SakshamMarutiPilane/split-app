@@ -1,22 +1,43 @@
 package com.splitwise.splitapp.dto;
 
 import com.splitwise.splitapp.model.SplitDetail;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+
 import java.time.LocalDate;
 import java.util.List;
 
 public class ExpenseRequest {
 
+    @NotBlank(message = "Description cannot be empty")
     private String description;
+
+    @Positive(message = "Amount must be greater than 0")
     private double amount;
+
+    @NotBlank(message = "PaidBy cannot be empty")
     private String paidBy;
+
+    @NotBlank(message = "Split type is required")
     private String splitType;
-    private List<SplitDetail> splitDetails;
+
+    @NotEmpty(message = "Split details are required")
+    private List<@Valid SplitDetail> splitDetails;
+
+    @NotBlank(message = "Category is required")
     private String category;
 
+    @NotNull(message = "Date is required")
     private LocalDate date;
+
     private boolean recurring;
+
     private String recurrenceType;
+
     private LocalDate recurrenceEndDate;
+
+    // Getters and Setters
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }

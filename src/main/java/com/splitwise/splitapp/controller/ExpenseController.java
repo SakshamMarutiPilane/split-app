@@ -7,11 +7,13 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.splitwise.splitapp.dto.BalanceResponse;
 import com.splitwise.splitapp.dto.ExpenseRequest;
+import com.splitwise.splitapp.exception.ResourceNotFoundException;
 import com.splitwise.splitapp.model.Expense;
 import com.splitwise.splitapp.model.ExpenseCategory;
 import com.splitwise.splitapp.service.ExpenseService;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,7 +44,32 @@ public class ExpenseController {
 
     // POST /expenses: Create Expense from DTO
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody ExpenseRequest request) {
+    public ResponseEntity<?> create(@Valid @RequestBody ExpenseRequest request) {
+        // Validate amount
+        if (request.getAmount() <= 0) {
+            return ResponseEntity.badRequest().body("Amount must be greater than 0");
+        }
+
+        // Validate split details
+        if (request.getSplitDetails() == null || request.getSplitDetails().isEmpty()) {
+            return ResponseEntity.badRequest().body("Split details are required");
+        }
+
+        for (var detail : request.getSplitDetails()) {
+            if (detail.getPerson() == null || detail.getPerson().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Each split must include a person");
+            }
+
+            if (detail.getValue() < 0) {
+                return ResponseEntity.badRequest().body("Split values cannot be negative");
+            }
+
+            if (request.getSplitType().equalsIgnoreCase("PERCENTAGE") && detail.getValue() > 100) {
+                return ResponseEntity.badRequest().body("Percentage value cannot exceed 100");
+            }
+        }
+
+        // Construct Expense object
         Expense expense = new Expense();
         expense.setDescription(request.getDescription());
         expense.setAmount(request.getAmount());
@@ -52,8 +80,8 @@ public class ExpenseController {
         expense.setRecurring(request.isRecurring());
         expense.setRecurrenceType(request.getRecurrenceType());
         expense.setRecurrenceEndDate(request.getRecurrenceEndDate());
-        
-        // Map category from request to ExpenseCategory enum, defaulting to OTHER on error
+
+        // Map category from string to enum
         ExpenseCategory category;
         try {
             category = ExpenseCategory.valueOf(request.getCategory().toUpperCase());
@@ -65,6 +93,7 @@ public class ExpenseController {
         return ResponseEntity.ok(service.addExpense(expense));
     }
 
+
     // PUT /expenses/{id}: Update Expense
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Expense expense) {
@@ -74,9 +103,19 @@ public class ExpenseController {
 
     // DELETE /expenses/{id}: Delete Expense
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        return service.deleteExpense(id) ? ResponseEntity.ok("Deleted") : ResponseEntity.notFound().build();
+    public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
+        boolean deleted = service.deleteExpense(id);
+
+        if (deleted) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Expense deleted successfully.");
+            return ResponseEntity.ok(response);
+        } else {
+            throw new ResourceNotFoundException("Expense not found with id: " + id);
+        }
     }
+
 
     // GET /expenses/balances: Get balances for all users
     @GetMapping("/balances")

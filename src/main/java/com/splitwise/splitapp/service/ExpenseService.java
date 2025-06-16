@@ -1,5 +1,6 @@
 package com.splitwise.splitapp.service;
 
+import com.splitwise.splitapp.exception.ResourceNotFoundException;
 import com.splitwise.splitapp.model.Expense;
 import com.splitwise.splitapp.model.ExpenseCategory;
 import com.splitwise.splitapp.model.SplitDetail;
@@ -27,7 +28,7 @@ public class ExpenseService {
 
     public Expense updateExpense(Long id, Expense updatedExpense) {
         Expense existingExpense = expenseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Expense not found with id: " + id));
+        		.orElseThrow(() -> new ResourceNotFoundException("Expense not found with id: " + id));
 
         existingExpense.setAmount(updatedExpense.getAmount());
         existingExpense.setDescription(updatedExpense.getDescription());
