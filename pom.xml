@@ -11,6 +11,7 @@
 	<groupId>com.splitwise</groupId>
 	<artifactId>splitapp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging> 
 	<name>split-app-backend</name>
 	<description>This is a application on split expenses</description>
 	<url/>
