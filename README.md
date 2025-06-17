@@ -35,9 +35,9 @@ This system enables:
 
 ## API Endpoints
 
-### 📁 1. Expense Management
+### 1. Expense Management
 
-#### ✅ 1.1 Add Equal Expense
+#### 1.1 Add Equal Expense
 Endpoint: POST /expenses
 Description: Add an expense where the amount is split equally among all participants.
 Example Request:
@@ -99,7 +99,7 @@ Expected Response:
 }
 ```
 
-#### ✅ 1.2 Add Exact Expense
+#### 1.2 Add Exact Expense
 Endpoint: POST /expenses
 Description: Add an expense where specific amounts are assigned to each participant.
 Example Request:
@@ -151,7 +151,7 @@ Expected Response:
 }
 ```
 
-#### ✅ 1.3 Add Percentage Expense
+#### 1.3 Add Percentage Expense
 Endpoint: POST /expenses
 Description: Add an expense where each participant pays a percentage of the total amount.
 Example Request:
@@ -203,7 +203,7 @@ Expected Response:
 }
 ```
 
-#### ✅ 1.4 List All Expenses
+#### 1.4 List All Expenses
 Endpoint: GET /expenses
 Description: Retrieve a list of all recorded expenses with full details including split information.
 Expected Response:
@@ -290,7 +290,7 @@ Expected Response:
 ]
 ```
 
-#### ✅ 1.5 Update an Expense
+#### 1.5 Update an Expense
 Endpoint: PUT /expenses/{id}
 Description: Update an existing expense (amount, participants, type of split, etc).
 Example Request:
@@ -343,7 +343,7 @@ Expected Response:
 }
 ```
 
-#### ✅ 1.6 Delete an Expense
+#### 1.6 Delete an Expense
 Endpoint: DELETE /expenses/{id}
 Description: Delete an existing expense by ID.
 Expected Response:
@@ -356,7 +356,7 @@ Expected Response:
 
 ### 📁 2. Settlements and People
 
-#### ✅ 2.1 Get All People
+#### 2.1 Get All People
 Endpoint: GET /expenses/people
 Description: Retrieve a list of all unique people involved in any expense.
 Expected Response:
@@ -368,7 +368,7 @@ Expected Response:
 ]
 ```
 
-#### ✅ 2.2 Get Balances
+#### 2.2 Get Balances
 Endpoint: GET /expenses/balances
 Description: Show each person’s current balance (positive = owed, negative = owes).
 Expected Response:
@@ -382,7 +382,7 @@ Expected Response:
 }
 ```
 
-#### ✅ 2.3 Get Settlement Summary
+#### 2.3 Get Settlement Summary
 Endpoint: GET /expenses/settlements
 Description: Get simplified transactions that show who needs to pay whom and how much.
 Expected Response:
@@ -396,9 +396,9 @@ Expected Response:
 ]
 ```
 
-### ⚠️ 3. Edge Cases & Validations
+### 3. Edge Cases & Validations
 
-#### ⚠️ 3.1 Add Invalid Expense - Negative Amount
+#### 3.1 Add Invalid Expense - Negative Amount
 Endpoint: POST /expenses
 Description: Test system behavior when amount is negative. Should return a validation error.
 Example Request:
@@ -426,7 +426,7 @@ Expected Response:
 }
 ```
 
-#### ⚠️ 3.2 Add Invalid Expense - Empty Description
+#### 3.2 Add Invalid Expense - Empty Description
 Endpoint: POST /expenses
 Description: Test system behavior when description is missing or empty.
 Example Request:
@@ -454,7 +454,7 @@ Expected Response:
 }
 ```
 
-#### ⚠️ 3.3 Add Invalid Expense - Missing PaidBy Field
+#### 3.3 Add Invalid Expense - Missing PaidBy Field
 Endpoint: POST /expenses
 Description: Test system behavior when paidBy field is missing or null.
 Example Request:
@@ -481,7 +481,7 @@ Expected Response:
 }
 ```
 
-#### ⚠️ 3.4 Split sum doesn’t match amount (for EXACT/PERCENTAGE)
+#### 3.4 Split sum doesn’t match amount (for EXACT/PERCENTAGE)
 Endpoint: PUT /expenses/{invalid-id}
 Description: Split summing value entered by user doesnt match the amount.
 Example Request:
@@ -509,7 +509,7 @@ Expected Response:
 }
 ```
 
-#### ⚠️ 3.5 Delete Non-Existent Expense
+#### 3.5 Delete Non-Existent Expense
 Endpoint: DELETE /expenses/{invalid-id}
 Description: Try deleting a non-existent expense. Should return 500 error.
 Expected Response:
@@ -521,7 +521,7 @@ Expected Response:
 }
 ```
 
-#### ⚠️ 3.6 Update Non-Existent Expense
+#### 3.6 Update Non-Existent Expense
 Endpoint: GET /expenses/balances
 Description: Try updating a non-existent expense. Should return 500 error.
 Expected Response:
@@ -533,9 +533,9 @@ Expected Response:
 }
 ```
 
-### 🌟 4. Optional / Advanced Features
+### 4. Optional / Advanced Features
 
-#### 🌟 4.1 Add Recurring Monthly Expense
+#### 4.1 Add Recurring Monthly Expense
 Endpoint: POST /expenses
 Description: Add a recurring expense like rent or subscriptions with recurring: true and type MONTHLY.
 Example Request:
@@ -583,7 +583,7 @@ Expected Response:
 }
 ```
 
-#### 🌟 4.2 GET Monthly Expense by filter
+#### 4.2 GET Monthly Expense by filter
 Endpoint: POST /expenses
 Description: Assign a category (e.g., FOOD, TRAVEL, ENTERTAINMENT) while adding an expense.
 Example Request:
@@ -599,15 +599,14 @@ Expected Response:
 }
 ```
 
-#### 🌟 4.3 Filter Expenses by Category (UI Only)
+#### 4.3 Filter Expenses by Category (UI Only)
 
 Note: This is a frontend feature. Filter visible expenses by category like FOOD, TRAVEL, etc.
 
 <img width="598" alt="image" src="https://github.com/user-attachments/assets/9d511527-b97d-4bd4-8041-0ad0f38177f2" />
-<img width="598" alt="image" src="https://github.com/user-attachments/assets/9d511527-b97d-4bd4-8041-0ad0f38177f2" />
 
 
-#### 🌟 4.4 Export Expenses to PDF or CSV
+#### 4.4 Export Expenses to PDF or CSV
 Endpoint:
 GET /expenses/export/pdf
 GET /expenses/export/csv
@@ -617,11 +616,9 @@ Description: Export all current expenses in PDF or CSV format.
 CSV:
 
 <img width="1037" alt="image" src="https://github.com/user-attachments/assets/c302c6f7-7641-4f1c-aeb6-7592afc10722" />
-<img width="1037" alt="image" src="https://github.com/user-attachments/assets/c302c6f7-7641-4f1c-aeb6-7592afc10722" />
 
 PDF:
 
-<img width="1035" alt="image" src="https://github.com/user-attachments/assets/c1c4fead-b461-4aec-ad3c-f818729fb463" />
 <img width="1035" alt="image" src="https://github.com/user-attachments/assets/c1c4fead-b461-4aec-ad3c-f818729fb463" />
 
 ---
@@ -708,5 +705,3 @@ This means these two transactions alone are sufficient to settle all debts inste
 5. Limited Error Handling in Frontend: The basic HTML/JS frontend currently has minimal input validation. Unexpected or malformed input can lead to errors.
 6. Manual Data Entry: There’s no person management UI — people are inferred only from expense input.
 7. PDF/CSV Export is Static: The export feature captures current data as-is. It doesn’t support custom filters or grouped exports yet.
-
-<img width="1003" alt="image" src="https://github.com/user-attachments/assets/80895a66-38e6-4011-93f1-08c170a17327" /><img width="1003" alt="image" src="https://github.com/user-attachments/assets/80895a66-38e6-4011-93f1-08c170a17327" />
