@@ -1,14 +1,13 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:17-jdk-slim
-
-# Set working directory inside the container
+# Stage 1: Build the application using Maven
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Copy the built JAR file into the container
-COPY target/splitapp-0.0.1-SNAPSHOT.jar app.jar
-
-# Expose port (must match your Spring Boot server.port, default is 8080)
+# Stage 2: Run the built application
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
-
-# Run the JAR file
 ENTRYPOINT ["java", "-jar", "app.jar"]
